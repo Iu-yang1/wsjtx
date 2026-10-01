@@ -6,7 +6,7 @@ program ft4sim
   use packjt77
   include 'ft4_params.f90'               !Set various constants
   type(hdr) h                            !Header for .wav file
-  character arg*12,fname*17
+  character arg*32,fname*17
   character msg37*37,msgsent37*37
   character c77*77
   complex c0(0:NMAX-1)
@@ -17,12 +17,14 @@ program ft4sim
   integer*1 msgbits(77)
   integer*2 iwave(NMAX)                  !Generated full-length waveform
   integer icos4(4)
+  real drift_rate
   data icos4/0,1,3,2/
   
 ! Get command-line argument(s)
   nargs=iargc()
-  if(nargs.ne.7) then
-     print*,'Usage:    ft4sim "message"               f0   DT fdop del nfiles snr'
+  drift_rate=0.0
+  if(nargs.ne.7 .and. nargs.ne.8) then
+     print*,'Usage:    ft4sim "message"               f0   DT fdop del nfiles snr [drift_hz_s]'
      print*,'Examples: ft4sim "CQ W9XYZ EN37"        1500 0.0  0.1 1.0   10   -15'
      print*,'          ft4sim "K1ABC W9XYZ R 539 WI" 1500 0.0  0.1 1.0   10   -15'
      go to 999
@@ -40,6 +42,10 @@ program ft4sim
   read(arg,*) nfiles                     !Number of files
   call getarg(7,arg)
   read(arg,*) snrdb                      !SNR_2500
+  if(nargs.eq.8) then
+     call getarg(8,arg)
+     read(arg,*) drift_rate                !Linear Doppler rate, Hz/s
+  endif
 
   nfiles=abs(nfiles)
   twopi=8.0*atan(1.0)
@@ -68,6 +74,7 @@ program ft4sim
   write(*,*)  
   write(*,'(a9,a37,3x,a7,i1,a1,i1)') 'Message: ',msgsent37,'i3.n3: ',i3,'.',n3
   write(*,1000) f0,xdt,txt,snrdb
+  write(*,'(a,f8.3,a)') 'Linear Doppler rate:',drift_rate,' Hz/s'
 1000 format('f0:',f9.3,'   DT:',f6.2,'   TxT:',f6.1,'   SNR:',f6.1)
   write(*,*)  
   if(i3.eq.1) then
@@ -87,6 +94,7 @@ program ft4sim
   fsample=12000.0
   icmplx=1
   call gen_ft4wave(itone,NN,NSPS,fsample,f0,c0,wave,icmplx,NMAX)
+  call apply_linear_chirp(c0,NZ2,fsample,drift_rate)
 
   k=nint((xdt+0.5)/dt)-NSPS
   c0=cshift(c0,-k)
@@ -129,3 +137,29 @@ program ft4sim
   enddo
   
 999 end program ft4sim
+
+subroutine apply_linear_chirp(c,n,fsample,drift_rate)
+
+! Apply a deterministic linear Doppler rate around the waveform midpoint.
+! Instantaneous offset: df(t) = drift_rate * (t - T/2).
+! This keeps f0 as the midpoint frequency so static offset is not mixed
+! into the deterministic Doppler-rate benchmark.
+
+  implicit none
+  integer, intent(in) :: n
+  real, intent(in) :: fsample,drift_rate
+  complex, intent(inout) :: c(0:n-1)
+  integer :: i
+  real(8) :: t,tmid,phase,pi
+
+  if(drift_rate.eq.0.0) return
+  pi=4.0d0*atan(1.0d0)
+  tmid=0.5d0*dble(n-1)/dble(fsample)
+  do i=0,n-1
+     t=dble(i)/dble(fsample)-tmid
+     phase=pi*dble(drift_rate)*t*t
+     c(i)=c(i)*cmplx(cos(phase),sin(phase))
+  enddo
+
+  return
+end subroutine apply_linear_chirp
