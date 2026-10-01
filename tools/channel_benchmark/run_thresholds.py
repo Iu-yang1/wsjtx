@@ -70,13 +70,40 @@ def run_checked(cmd: list[str], cwd: Path, timeout: int = 1800) -> subprocess.Co
     return proc
 
 
-def count_decodes(stdout: str, message: str) -> int:
+def count_decoded_trials(mode: str, stdout: str, message: str, trials: int) -> int:
+    """Count WAV trials that decoded the target at least once.
+
+    WSJT-X decoders can emit the same successful decode more than once as
+    different passes converge. A Monte-Carlo trial is binary, so duplicate
+    lines from one WAV must never count as multiple successes.
+    """
     target = norm(message)
-    count = 0
-    for line in stdout.splitlines():
-        if target in norm(line):
-            count += 1
-    return count
+    decoded: set[int] = set()
+
+    if mode in ("ft4", "ft8"):
+        # jt9 prefixes disk-file decodes with the six-digit sequence taken
+        # from simulator names such as 000000_000017.wav.
+        for line in stdout.splitlines():
+            if target not in norm(line):
+                continue
+            m = re.match(r"^\\s*(\\d{6})\\b", line)
+            if m:
+                idx = int(m.group(1))
+                if 1 <= idx <= trials:
+                    decoded.add(idx)
+    else:
+        # rjtty -ndebug 1 prints each WAV filename before its decode updates.
+        current: int | None = None
+        for line in stdout.splitlines():
+            m = re.search(r"000000_(\\d{6})\\.wav", line)
+            if m:
+                current = int(m.group(1))
+                continue
+            if current is not None and target in norm(line):
+                if 1 <= current <= trials:
+                    decoded.add(current)
+
+    return len(decoded)
 
 
 def wilson(success: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
@@ -178,7 +205,7 @@ class Runner:
 
             if self.mode == "jtty":
                 dcmd = [
-                    str(self.decoder), "4.6", "0", "384", "1500", "500",
+                    str(self.decoder), "4.6", "1", "384", "1500", "500",
                     *[str(p) for p in wavs],
                 ]
             elif self.mode == "ft4":
@@ -200,12 +227,7 @@ class Runner:
                     *[str(p) for p in wavs],
                 ]
             dec = run_checked(dcmd, temp_root)
-            successes = count_decodes(dec.stdout, msg)
-            if successes > trials:
-                raise RuntimeError(
-                    f"{self.mode}: counted {successes} target decodes for {trials} trials; "
-                    "duplicate decoder output would invalidate probability estimates"
-                )
+            successes = count_decoded_trials(self.mode, dec.stdout, msg, trials)
             lo, hi = wilson(successes, trials)
             return {
                 "mode": self.mode,
