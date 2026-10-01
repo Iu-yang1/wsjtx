@@ -21,6 +21,10 @@ on:
         required: false
         default: "64"
 
+concurrency:
+  group: channel-threshold-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
