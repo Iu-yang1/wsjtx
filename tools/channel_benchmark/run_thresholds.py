@@ -86,7 +86,7 @@ def count_decoded_trials(mode: str, stdout: str, message: str, trials: int) -> i
         for line in stdout.splitlines():
             if target not in norm(line):
                 continue
-            m = re.match(r"^\\s*(\\d{6})\\b", line)
+            m = re.match(r"^\s*(\d{6})\b", line)
             if m:
                 idx = int(m.group(1))
                 if 1 <= idx <= trials:
@@ -95,7 +95,7 @@ def count_decoded_trials(mode: str, stdout: str, message: str, trials: int) -> i
         # rjtty -ndebug 1 prints each WAV filename before its decode updates.
         current: int | None = None
         for line in stdout.splitlines():
-            m = re.search(r"000000_(\\d{6})\\.wav", line)
+            m = re.search(r"000000_(\d{6})\.wav", line)
             if m:
                 current = int(m.group(1))
                 continue
