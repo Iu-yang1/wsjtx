@@ -1,0 +1,241 @@
+name: JTTY FT4 FT8 Channel Thresholds
+
+on:
+  push:
+    branches:
+      - bench/jtty-ft4-ft8-channel-thresholds
+    paths:
+      - "lib/jtty/**"
+      - "lib/ft4/**"
+      - "lib/ft8/**"
+      - "tools/channel_benchmark/**"
+      - ".github/workflows/channel-threshold-benchmark.yml"
+  workflow_dispatch:
+    inputs:
+      quick_trials:
+        description: "Trials per adaptive SNR probe"
+        required: false
+        default: "16"
+      final_trials:
+        description: "Trials per final transition point"
+        required: false
+        default: "64"
+
+permissions:
+  contents: read
+
+env:
+  QUICK_TRIALS: ${{ inputs.quick_trials || '16' }}
+  FINAL_TRIALS: ${{ inputs.final_trials || '64' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout benchmark branch
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install build dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake gfortran git pkg-config autoconf automake libtool \
+            libfftw3-dev libboost-log-dev \
+            qtbase5-dev qttools5-dev qtmultimedia5-dev libqt5serialport5-dev \
+            libqt5sql5-sqlite libqt5websockets5-dev \
+            libusb-1.0-0-dev libudev-dev portaudio19-dev
+
+      - name: Build pinned Hamlib
+        shell: bash
+        run: |
+          mkdir -p .deps
+          cd .deps
+          ../.github/scripts/build-hamlib-linux.sh \
+            40f63488fe0bd751b147f48d62fd217bf53713a0 \
+            "$GITHUB_WORKSPACE/.deps/hamlib"
+
+      - name: Configure benchmark build
+        shell: bash
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH="$GITHUB_WORKSPACE/.deps/hamlib" \
+            -DWSJT_SKIP_MANPAGES=ON \
+            -DWSJT_GENERATE_DOCS=OFF \
+            -DWSJT_ENABLE_TESTS=OFF \
+            -DWSJT_ENABLE_GUI_SMOKE_TESTS=OFF \
+            -DWSJT_SKIP_QMAP=ON \
+            -DWSJT_BUILD_JT9STREAM=OFF \
+            -DWSJT_BUILD_UTILS=ON \
+            -DWSJT_FORTRAN_LIBRARY_VARIANTS=NON_OPENMP_ONLY \
+            -Wno-dev
+
+      - name: Build benchmark executables
+        shell: bash
+        run: |
+          cmake --build build \
+            --target jt9 ft8sim ft4sim sjtty rjtty \
+            -j"$(nproc)"
+
+      - name: Smoke-test simulator CLI extensions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke/jtty smoke/ft4 smoke/ft8
+
+          (
+            cd smoke/jtty
+            ../../build/sjtty "CQ K1ABC CQ" 1500 0.1 0 0 384 1 -5 1
+            ../../build/rjtty 4.6 0 384 1500 500 000000_000001.wav | tee decode.txt
+            grep -F "CQ K1ABC CQ" decode.txt
+          )
+
+          (
+            cd smoke/ft4
+            ../../build/ft4sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 -5 1
+            mkdir data
+            ../../build/jt9 -5 -q -d 3 -Q 0 -c b -x b -f 1500 -F 500 \
+              -p 7.5 -a data -r ../.. 000000_000001.wav | tee decode.txt
+            grep -F "K1ABC W9XYZ EN37" decode.txt
+          )
+
+          (
+            cd smoke/ft8
+            ../../build/ft8sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 -5 1
+            mkdir data
+            ../../build/jt9 -8 -q -d 3 -Q 0 -c b -x b -f 1500 -F 500 \
+              -p 15 -a data -r ../.. 000000_000001.wav | tee decode.txt
+            grep -F "K1ABC W9XYZ EN37" decode.txt
+          )
+
+      - name: Record build provenance
+        shell: bash
+        run: |
+          mkdir -p bench-bin
+          cp build/jt9 build/ft8sim build/ft4sim build/sjtty build/rjtty bench-bin/
+          chmod +x bench-bin/*
+          {
+            echo "benchmark_commit=$(git rev-parse HEAD)"
+            echo "jtty_baseline_tag=v3.2.0-rc1"
+            echo "jtty_baseline_commit=$(git rev-list -n1 v3.2.0-rc1)"
+            echo "upstream_master_commit=$(git ls-remote https://github.com/WSJTX/wsjtx.git refs/heads/master | awk '{print $1}')"
+            echo "hamlib_commit=40f63488fe0bd751b147f48d62fd217bf53713a0"
+            echo "runner=ubuntu-24.04"
+          } > bench-bin/provenance.txt
+          cat bench-bin/provenance.txt
+
+      - name: Upload benchmark executables
+        uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-bin
+          path: bench-bin
+          if-no-files-found: error
+          retention-days: 7
+
+  benchmark:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [jtty, ft4, ft8]
+        family: [watterson, doppler]
+    steps:
+      - name: Checkout benchmark source
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Install decoder runtime libraries
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libfftw3-dev libboost-log-dev \
+            qtbase5-dev qttools5-dev qtmultimedia5-dev libqt5serialport5-dev \
+            libqt5sql5-sqlite libqt5websockets5-dev \
+            libusb-1.0-0-dev libudev-dev portaudio19-dev
+
+      - name: Download benchmark executables
+        uses: actions/download-artifact@v8
+        with:
+          name: benchmark-bin
+          path: bench-bin
+
+      - name: Run threshold sweep
+        shell: bash
+        run: |
+          chmod +x bench-bin/jt9 bench-bin/ft8sim bench-bin/ft4sim bench-bin/sjtty bench-bin/rjtty
+          out="results/${{ matrix.mode }}-${{ matrix.family }}"
+          python3 tools/channel_benchmark/run_thresholds.py \
+            --mode "${{ matrix.mode }}" \
+            --family "${{ matrix.family }}" \
+            --bin-dir bench-bin \
+            --source-dir "$GITHUB_WORKSPACE" \
+            --output-dir "$out" \
+            --quick-trials "$QUICK_TRIALS" \
+            --final-trials "$FINAL_TRIALS" \
+            --resolution-db 0.5 \
+            --snr-low -30 \
+            --snr-high 20
+          cp bench-bin/provenance.txt "$out/provenance.txt"
+
+      - name: Publish job summary
+        if: always()
+        shell: bash
+        run: |
+          file="results/${{ matrix.mode }}-${{ matrix.family }}/summary.csv"
+          if [ -f "$file" ]; then
+            echo "### ${{ matrix.mode }} / ${{ matrix.family }}" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            sed -n '1,30p' "$file" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload raw and summarized results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: threshold-${{ matrix.mode }}-${{ matrix.family }}
+          path: results/${{ matrix.mode }}-${{ matrix.family }}
+          if-no-files-found: warn
+          retention-days: 30
+
+  aggregate:
+    if: always()
+    needs: benchmark
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout benchmark source
+        uses: actions/checkout@v7
+
+      - name: Download threshold artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: threshold-*
+          path: collected
+
+      - name: Build combined tables
+        shell: bash
+        run: |
+          mkdir -p combined
+          python3 tools/channel_benchmark/summarize.py collected \
+            --csv combined/all-thresholds.csv \
+            --markdown combined/RESULTS.md
+          first_provenance="$(find collected -name provenance.txt -print -quit)"
+          if [ -n "$first_provenance" ]; then
+            cp "$first_provenance" combined/provenance.txt
+          fi
+          cat combined/RESULTS.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload combined results
+        uses: actions/upload-artifact@v7
+        with:
+          name: channel-threshold-results
+          path: combined
+          if-no-files-found: error
+          retention-days: 30
