@@ -89,14 +89,14 @@ jobs:
 
           (
             cd smoke/jtty
-            ../../build/sjtty "CQ K1ABC CQ" 1500 0.1 0 0 384 1 -5 1
+            ../../build/sjtty "CQ K1ABC CQ" 1500 0.1 0 0 384 1 10 0.1
             ../../build/rjtty 4.6 0 384 1500 500 000000_000001.wav | tee decode.txt
             grep -F "CQ K1ABC CQ" decode.txt
           )
 
           (
             cd smoke/ft4
-            ../../build/ft4sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 -5 1
+            ../../build/ft4sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 10 0.1
             mkdir data
             ../../build/jt9 -5 -q -d 3 -Q 0 -c b -x b -f 1500 -F 500 \
               -p 7.5 -a data -r ../.. 000000_000001.wav | tee decode.txt
@@ -105,7 +105,7 @@ jobs:
 
           (
             cd smoke/ft8
-            ../../build/ft8sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 -5 1
+            ../../build/ft8sim "K1ABC W9XYZ EN37" 1500 0 0 0 1 10 0.1
             mkdir data
             ../../build/jt9 -8 -q -d 3 -Q 0 -c b -x b -f 1500 -F 500 \
               -p 15 -a data -r ../.. 000000_000001.wav | tee decode.txt
