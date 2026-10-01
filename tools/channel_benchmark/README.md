@@ -29,13 +29,15 @@ The signal passes through the existing WSJT-X `watterson()` implementation.
 | Label | Frequency spread | Differential delay |
 | --- | ---: | ---: |
 | AWGN | 0 Hz | 0 ms |
-| 1 Hz | 1 Hz | 2 ms |
-| 10 Hz | 10 Hz | 3 ms |
-| 30 Hz | 30 Hz | 7 ms |
+| 1 Hz | 1 Hz | 1 ms |
+| 10 Hz | 10 Hz | 1 ms |
+| 30 Hz | 30 Hz | 1 ms |
 
-The last three pairs correspond to the parameter pairs commonly used for
-ITU-R F.1487 mid-latitude disturbed, high-latitude moderate, and high-latitude
-disturbed tests.
+The three Watterson cases deliberately hold differential delay at 1 ms while
+changing only Doppler spread. In the WSJT-X implementation, setting delay to
+zero removes the second delayed fading path, so a fixed nonzero delay is used
+to preserve the two-path Watterson channel without confounding spread with
+different delay profiles.
 
 ### Deterministic Doppler rate
 
