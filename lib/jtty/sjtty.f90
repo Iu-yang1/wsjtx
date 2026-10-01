@@ -21,6 +21,7 @@ program sjtty
   character*80 umsg                 !User-formatted message
   character(len=80) :: profile_option
   integer :: exchange_profile,arg_offset
+  real :: drift_rate
   character*40 fname                !Output file name
   character*34 c32(16)
   complex, allocatable :: cwave(:)  !Complex generated waveform (12000 Hz)
@@ -35,6 +36,7 @@ program sjtty
   logical itu_model                 !True if fdop, delay are from an ITU model
 
   nargs=iargc()
+  drift_rate=0.0
   exchange_profile=JTTY_EXCHANGE_UNKNOWN
   arg_offset=0
   if(nargs.gt.0) then
@@ -74,11 +76,11 @@ program sjtty
           59*nframes*nsps/12000.0," seconds"
     endif
     go to 999
-  else if(nargs.ne.8) then
+  else if(nargs.ne.8 .and. nargs.ne.9) then
      print*,'Usage:     sjtty       message'
      print*,'Example:   sjtty    "CQ DX KA1ABC"' 
      print*,'or'
-     print*,'Usage:     sjtty       message     f0   DT fdop del nsps  nfiles SNR'
+     print*,'Usage:     sjtty       message     f0   DT fdop del nsps  nfiles SNR [drift_hz_s]'
      print*,'Example:   sjtty    "CQ K1ABC CQ" 1500 0.0  0.5  1   384    10   -10'
      print*,'Optional first argument: --exchange-profile=unknown|field-day|rtty-roundup'
      print*,'ITU propagation models: set fdop to AW LQ LM LD MQ MM MD HQ HM HD'
@@ -140,6 +142,10 @@ program sjtty
   read(arg,*) nfiles                     !Number of files
   call getarg(8+arg_offset,arg)
   read(arg,*) snrdb                      !SNR in 2500 Hz bandwidth
+  if(nargs.eq.9) then
+     call getarg(9+arg_offset,arg)
+     read(arg,*) drift_rate                !Linear Doppler rate, Hz/s
+  endif
 
   fsample=12000.0
   dt=1.0/fsample
@@ -190,9 +196,11 @@ program sjtty
 
   icmplx=1
   call gen_jttywave(itone,nsym,nsps,bt,fsample,f0,cwave,wave,icmplx,nwave)
+  call apply_linear_chirp(cwave,nwave,fsample,drift_rate)
 
 
   write(*,1000) f0,xdt,txt,snrdb,bw
+  write(*,'(a,f8.3,a)') 'Linear Doppler rate:',drift_rate,' Hz/s'
 1000 format('f0:',f7.1,'   DT:',f6.2,'   TxT:',f6.1,'   SNR:',f6.1,'  BW:',f6.1)
   cps=baud/7.0
   cps_effective=numsg/txt
@@ -256,3 +264,29 @@ program sjtty
 end program sjtty
 
 !include 'jtty_spec.f90'
+
+subroutine apply_linear_chirp(c,n,fsample,drift_rate)
+
+! Apply a deterministic linear Doppler rate around the waveform midpoint.
+! Instantaneous offset: df(t) = drift_rate * (t - T/2).
+! This keeps f0 as the midpoint frequency so static offset is not mixed
+! into the deterministic Doppler-rate benchmark.
+
+  implicit none
+  integer, intent(in) :: n
+  real, intent(in) :: fsample,drift_rate
+  complex, intent(inout) :: c(0:n-1)
+  integer :: i
+  real(8) :: t,tmid,phase,pi
+
+  if(drift_rate.eq.0.0) return
+  pi=4.0d0*atan(1.0d0)
+  tmid=0.5d0*dble(n-1)/dble(fsample)
+  do i=0,n-1
+     t=dble(i)/dble(fsample)-tmid
+     phase=pi*dble(drift_rate)*t*t
+     c(i)=c(i)*cmplx(cos(phase),sin(phase))
+  enddo
+
+  return
+end subroutine apply_linear_chirp
