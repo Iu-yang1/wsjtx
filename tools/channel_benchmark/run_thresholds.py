@@ -318,7 +318,7 @@ def estimate_threshold(
 def write_csv(path: Path, rows: list[dict]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = [
-        "mode", "spread_hz", "delay_ms", "drift_hz_s", "snr_db",
+        "mode", "condition", "spread_hz", "delay_ms", "drift_hz_s", "snr_db",
         "trials", "successes", "p_decode", "wilson95_low",
         "wilson95_high", "elapsed_s",
     ]
