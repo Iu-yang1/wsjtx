@@ -22,9 +22,12 @@ import time
 
 WATTERSON = {
     "awgn": (0.0, 0.0),
-    "1hz": (1.0, 2.0),   # ITU-R F.1487 mid-latitude disturbed
-    "10hz": (10.0, 3.0), # ITU-R F.1487 high-latitude moderate
-    "30hz": (30.0, 7.0), # ITU-R F.1487 high-latitude disturbed
+    # Keep differential delay fixed so this family isolates Doppler spread.
+    # A nonzero delay is required by WSJT-X watterson() to retain both
+    # independently faded paths; 1 ms matches the simulator's common example.
+    "1hz": (1.0, 1.0),
+    "10hz": (10.0, 1.0),
+    "30hz": (30.0, 1.0),
 }
 
 MODE = {
