@@ -19,6 +19,10 @@ on:
         required: false
         default: '48'
 
+concurrency:
+  group: channel-robustness-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -140,6 +144,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           pattern: thresholds-*
           path: collected
