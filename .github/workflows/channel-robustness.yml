@@ -1,39 +1,41 @@
-name: Channel robustness P50 (JTTY / FT4 / FT8)
+name: QEX-style refined channel robustness (JTTY FT4 FT8)
 
 on:
   push:
-    branches: [bench/jtty-ft4-ft8-channel-thresholds]
+    branches: [bench/refined-channel-robustness]
     paths:
       - '.github/workflows/channel-robustness.yml'
       - 'tools/channel-bench/**'
-      - 'lib/sgran.c'
       - 'lib/jtty/sjtty.f90'
+      - 'lib/sgran.c'
+      - 'lib/ft4/ft4sim.f90'
+      - 'lib/ft8/ft8sim.f90'
       - 'CMakeLists.txt'
   workflow_dispatch:
     inputs:
       pilot_trials:
-        description: 'Pilot trials per SNR'
+        description: "Trials per pilot-grid SNR (minimum 6)"
+        default: "16"
         required: false
-        default: '12'
-      final_trials:
-        description: 'Confirmation trials per SNR'
+      dense_trials:
+        description: "Trials per dense-grid SNR (recommend 128+)"
+        default: "128"
         required: false
-        default: '48'
-
-concurrency:
-  group: channel-robustness-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: read
 
+concurrency:
+  group: refined-channel-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 100
     steps:
       - uses: actions/checkout@v4
-      - name: Install upstream build dependencies
+      - name: Install native WSJT-X build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
@@ -42,23 +44,20 @@ jobs:
             qtbase5-dev qttools5-dev qtmultimedia5-dev \
             libqt5serialport5-dev libqt5sql5-sqlite \
             libqt5websockets5-dev libqt5multimedia5-plugins \
-            libusb-1.0-0-dev libudev-dev portaudio19-dev \
-            asciidoctor
-      - name: Build exact upstream simulator and decoder binaries
+            libusb-1.0-0-dev libudev-dev portaudio19-dev asciidoctor
+      - name: Build native test executables
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
             -DWSJT_SKIP_MANPAGES=ON -DWSJT_ENABLE_TESTS=OFF \
             -DWSJT_BUILD_UTILS=ON \
-            -DWSJT_FORTRAN_LIBRARY_VARIANTS=NON_OPENMP_ONLY \
-            -Wno-dev
+            -DWSJT_FORTRAN_LIBRARY_VARIANTS=NON_OPENMP_ONLY -Wno-dev
           cmake --build build --target sjtty rjtty ft4sim ft8sim jt9 -j 4
-          for binary in sjtty rjtty ft4sim ft8sim jt9; do
-            test -x "build/$binary"
-            ldd "build/$binary" | grep 'not found' && exit 1 || true
+          for target in sjtty rjtty ft4sim ft8sim jt9; do
+            test -x "build/$target"
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: benchmark-binaries
+          name: native-binaries
           path: |
             build/sjtty
             build/rjtty
@@ -67,98 +66,102 @@ jobs:
             build/jt9
           retention-days: 14
 
-  smoke:
+  validate:
     needs: build
     runs-on: ubuntu-24.04
-    timeout-minutes: 80
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: benchmark-binaries
+          name: native-binaries
           path: build
-      - name: Install decoding runtime
+      - name: Install runtime and scientific Python dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             libfftw3-single3 libhamlib-dev libboost-log-dev \
-            qtbase5-dev qtmultimedia5-dev python3-numpy python3-scipy
+            qtbase5-dev qtmultimedia5-dev \
+            python3-numpy python3-scipy python3-matplotlib
           chmod +x build/sjtty build/rjtty build/ft4sim build/ft8sim build/jt9
-      - name: Run statistical and waveform unit checks
+      - name: Statistical and signal processing tests
         run: python3 -m unittest discover -s tools/channel-bench -p 'test_*.py' -v
-      - name: Assert deterministic and independent JTTY RNG seeds
+      - name: Verify JTTY seeds are independent and reproducible
         run: python3 tools/channel-bench/verify_rng.py --bin-dir build
-      - name: Confirm all three original decoders can process a noise-free frame
-        run: |
-          for mode in jtty ft4 ft8; do
-            python3 tools/channel-bench/smoke_decode.py \
-              --bin-dir build --mode "$mode"
-          done
+      - name: Validate all message variants with actual decoders
+        run: python3 tools/channel-bench/verify_message_ensemble.py --bin-dir build
 
   sweep:
-    needs: [build, smoke]
+    needs: [build,validate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
     strategy:
       fail-fast: false
       matrix:
         mode: [jtty, ft4, ft8]
-        kind: [spread, drift]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 330
+        group: [spread, drift-low, drift-high]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: benchmark-binaries
+          name: native-binaries
           path: build
-      - name: Install runtime and Python scientific libraries
+      - name: Install runtime
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             libfftw3-single3 libhamlib-dev libboost-log-dev \
             qtbase5-dev qtmultimedia5-dev python3-numpy python3-scipy
           chmod +x build/sjtty build/rjtty build/ft4sim build/ft8sim build/jt9
-      - name: Monte Carlo SNR sweeps
+      - name: Fixed-grid and dense-grid Monte Carlo
         env:
-          PILOT: ${{ inputs.pilot_trials || '12' }}
-          FINAL: ${{ inputs.final_trials || '48' }}
+          PILOT: ${{ inputs.pilot_trials || '16' }}
+          DENSE: ${{ inputs.dense_trials || '128' }}
         run: |
-          python3 -u tools/channel-bench/run_thresholds.py \
+          set -o pipefail
+          python3 -u tools/channel-bench/refined_thresholds.py \
             --bin-dir build --mode "${{ matrix.mode }}" \
-            --kind "${{ matrix.kind }}" \
-            --out "results/${{ matrix.mode }}-${{ matrix.kind }}" \
-            --pilot-trials "$PILOT" --final-trials "$FINAL" \
-            --snr-min -32 --snr-max 20 --max-drift 20 \
-            | tee "run-${{ matrix.mode }}-${{ matrix.kind }}.log"
-      - name: Upload all points, censoring status, and process output
-        if: always()
+            --group "${{ matrix.group }}" \
+            --out "measurements/${{ matrix.mode }}-${{ matrix.group }}" \
+            --pilot-trials "$PILOT" --dense-trials "$DENSE" \
+            | tee "run-${{ matrix.mode }}-${{ matrix.group }}.log"
+      - name: Save per-trial observations even on partial failure
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: thresholds-${{ matrix.mode }}-${{ matrix.kind }}
+          name: measured-${{ matrix.mode }}-${{ matrix.group }}
           path: |
-            results/${{ matrix.mode }}-${{ matrix.kind }}/
-            run-${{ matrix.mode }}-${{ matrix.kind }}.log
+            measurements/${{ matrix.mode }}-${{ matrix.group }}/
+            run-${{ matrix.mode }}-${{ matrix.group }}.log
           if-no-files-found: warn
           retention-days: 30
 
   report:
-    if: always()
     needs: sweep
+    if: always()
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         continue-on-error: true
         with:
-          pattern: thresholds-*
+          pattern: measured-*
           path: collected
           merge-multiple: false
-      - name: Merge and summarize
-        run: python3 tools/channel-bench/report.py collected summary
-      - name: Summary on GitHub Actions
-        run: cat summary/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Install report plotting dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends python3-numpy python3-scipy python3-matplotlib
+      - name: Audit samples, fit threshold distributions and render QEX-like figures
+        run: python3 tools/channel-bench/refined_report.py collected summary
+      - name: Publish report in Actions summary
+        if: always()
+        run: |
+          if [ -f summary/summary.md ]; then cat summary/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: threshold-summary
+          name: refined-75-condition-analysis
           path: summary/
+          if-no-files-found: warn
           retention-days: 30
