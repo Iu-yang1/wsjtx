@@ -125,3 +125,5 @@ per useful bit, general-chat throughput, AP-assisted QSO operation,
 Doppler compensation, multi-user interference or actual propagation
 hardware. The original QEX Figure 7 used an earlier WSJT-X version,
 so thresholds need not numerically reproduce that figure.
+
+CI trigger note: this refinement is tested against the existing benchmark branch via a draft PR; no master merge is implied.
