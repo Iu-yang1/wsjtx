@@ -8,6 +8,7 @@ on:
       - 'tools/channel-bench/**'
       - 'lib/sgran.c'
       - 'lib/jtty/sjtty.f90'
+      - 'CMakeLists.txt'
   workflow_dispatch:
     inputs:
       pilot_trials:
