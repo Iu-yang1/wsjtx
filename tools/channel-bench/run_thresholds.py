@@ -106,8 +106,8 @@ class Runner:
                 raise FileNotFoundError(binaries/name)
 
     def trial(self, kind: str, name: str, spread: float, delay: float,
-              drift: float, snr: float, seed: int) -> bool:
-        msg = MESSAGES[self.mode]
+              drift: float, snr: float, seed: int, message: str | None = None) -> bool:
+        msg = message or MESSAGES[self.mode]
         with tempfile.TemporaryDirectory(prefix="wsjtx-p50-") as td:
             path = Path(td)
             env = os.environ.copy()
@@ -120,6 +120,10 @@ class Runner:
             else:
                 args = [msg, "1500", "0.0", str(fdop), str(dms),
                         "1", str(snr)]
+            # All three simulators support a native optional chirp argument.
+            # Chirp the TX complex waveform BEFORE Watterson fading and AWGN.
+            if kind == "drift" and drift:
+                args.append(str(drift))
             cmd = [str(self.binaries/(self.mode+"sim" if self.mode != "jtty"
                                       else "sjtty")), *args]
             gen = subprocess.run(cmd, cwd=path, env=env, text=True,
@@ -130,9 +134,6 @@ class Runner:
             wav = path/OUTPUT_WAV
             if not wav.is_file():
                 raise RuntimeError("Simulator did not produce WAV: " + gen.stdout[-1200:])
-            if kind == "drift" and drift:
-                start, duration = TIMING[self.mode]
-                chirp_wav(wav, drift, start+duration/2)
             if self.mode == "jtty":
                 decode = [str(self.binaries/"rjtty"), "4.6", "0", "384",
                           "1500", "450", str(wav)]
