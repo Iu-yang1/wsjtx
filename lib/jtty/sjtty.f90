@@ -212,7 +212,9 @@ program sjtty
 1003 format('ITU propagation model: ',a2)
   write(*,*)  
 
-  ! Match FT4/FT8: seed once for each simulation invocation.\n  ! WSJT_SIM_SEED (when set) makes Monte Carlo runs reproducible.\n  call sgran()
+  ! Match FT4/FT8: seed once for each simulation invocation.
+  ! WSJT_SIM_SEED (when set) makes Monte Carlo runs reproducible.
+  call sgran()
 
   do ifile=1,nfiles
      c0=0.
