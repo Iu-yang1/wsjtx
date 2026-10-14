@@ -86,6 +86,8 @@ jobs:
           chmod +x build/sjtty build/rjtty build/ft4sim build/ft8sim build/jt9
       - name: Run statistical and waveform unit checks
         run: python3 -m unittest discover -s tools/channel-bench -p 'test_*.py' -v
+      - name: Assert deterministic and independent JTTY RNG seeds
+        run: python3 tools/channel-bench/verify_rng.py --bin-dir build
       - name: Confirm all three original decoders can process a noise-free frame
         run: |
           for mode in jtty ft4 ft8; do
