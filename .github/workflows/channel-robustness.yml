@@ -76,7 +76,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: benchmark-binaries
-          path: .
+          path: build
       - name: Install decoding runtime
         run: |
           sudo apt-get update
@@ -107,7 +107,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: benchmark-binaries
-          path: .
+          path: build
       - name: Install runtime and Python scientific libraries
         run: |
           sudo apt-get update
