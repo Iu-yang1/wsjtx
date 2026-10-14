@@ -1,0 +1,156 @@
+name: Channel robustness P50 (JTTY / FT4 / FT8)
+
+on:
+  push:
+    branches: [bench/jtty-ft4-ft8-channel-thresholds]
+    paths:
+      - '.github/workflows/channel-robustness.yml'
+      - 'tools/channel-bench/**'
+      - 'lib/sgran.c'
+      - 'lib/jtty/sjtty.f90'
+  workflow_dispatch:
+    inputs:
+      pilot_trials:
+        description: 'Pilot trials per SNR'
+        required: false
+        default: '12'
+      final_trials:
+        description: 'Confirmation trials per SNR'
+        required: false
+        default: '48'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install upstream build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential gfortran cmake pkg-config \
+            libfftw3-dev libboost-log-dev libhamlib-dev \
+            qtbase5-dev qttools5-dev qtmultimedia5-dev \
+            libqt5serialport5-dev libqt5sql5-sqlite \
+            libqt5websockets5-dev libqt5multimedia5-plugins \
+            libusb-1.0-0-dev libudev-dev portaudio19-dev \
+            asciidoctor
+      - name: Build exact upstream simulator and decoder binaries
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+            -DWSJT_SKIP_MANPAGES=ON -DWSJT_ENABLE_TESTS=OFF \
+            -DWSJT_BUILD_UTILS=ON \
+            -DWSJT_FORTRAN_LIBRARY_VARIANTS=NON_OPENMP_ONLY \
+            -Wno-dev
+          cmake --build build --target sjtty rjtty ft4sim ft8sim jt9 -j 4
+          for binary in sjtty rjtty ft4sim ft8sim jt9; do
+            test -x "build/$binary"
+            ldd "build/$binary" | grep 'not found' && exit 1 || true
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-binaries
+          path: |
+            build/sjtty
+            build/rjtty
+            build/ft4sim
+            build/ft8sim
+            build/jt9
+          retention-days: 14
+
+  smoke:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: benchmark-binaries
+          path: .
+      - name: Install decoding runtime
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libfftw3-single3 libhamlib-dev libboost-log-dev \
+            qtbase5-dev qtmultimedia5-dev python3-numpy python3-scipy
+          chmod +x build/sjtty build/rjtty build/ft4sim build/ft8sim build/jt9
+      - name: Run statistical and waveform unit checks
+        run: python3 -m unittest discover -s tools/channel-bench -p 'test_*.py' -v
+      - name: Confirm all three original decoders can process a noise-free frame
+        run: |
+          for mode in jtty ft4 ft8; do
+            python3 tools/channel-bench/smoke_decode.py \
+              --bin-dir build --mode "$mode"
+          done
+
+  sweep:
+    needs: [build, smoke]
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [jtty, ft4, ft8]
+        kind: [spread, drift]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: benchmark-binaries
+          path: .
+      - name: Install runtime and Python scientific libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libfftw3-single3 libhamlib-dev libboost-log-dev \
+            qtbase5-dev qtmultimedia5-dev python3-numpy python3-scipy
+          chmod +x build/sjtty build/rjtty build/ft4sim build/ft8sim build/jt9
+      - name: Monte Carlo SNR sweeps
+        env:
+          PILOT: ${{ inputs.pilot_trials || '12' }}
+          FINAL: ${{ inputs.final_trials || '48' }}
+        run: |
+          python3 -u tools/channel-bench/run_thresholds.py \
+            --bin-dir build --mode "${{ matrix.mode }}" \
+            --kind "${{ matrix.kind }}" \
+            --out "results/${{ matrix.mode }}-${{ matrix.kind }}" \
+            --pilot-trials "$PILOT" --final-trials "$FINAL" \
+            --snr-min -32 --snr-max 20 --max-drift 20 \
+            | tee "run-${{ matrix.mode }}-${{ matrix.kind }}.log"
+      - name: Upload all points, censoring status, and process output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thresholds-${{ matrix.mode }}-${{ matrix.kind }}
+          path: |
+            results/${{ matrix.mode }}-${{ matrix.kind }}/
+            run-${{ matrix.mode }}-${{ matrix.kind }}.log
+          if-no-files-found: warn
+          retention-days: 30
+
+  report:
+    if: always()
+    needs: sweep
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: thresholds-*
+          path: collected
+          merge-multiple: false
+      - name: Merge and summarize
+        run: python3 tools/channel-bench/report.py collected summary
+      - name: Summary on GitHub Actions
+        run: cat summary/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: threshold-summary
+          path: summary/
+          retention-days: 30
