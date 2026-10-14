@@ -11,6 +11,8 @@ on:
       - 'lib/ft4/ft4sim.f90'
       - 'lib/ft8/ft8sim.f90'
       - 'CMakeLists.txt'
+  pull_request:
+    branches: [bench/jtty-ft4-ft8-channel-thresholds]
   workflow_dispatch:
     inputs:
       pilot_trials:
