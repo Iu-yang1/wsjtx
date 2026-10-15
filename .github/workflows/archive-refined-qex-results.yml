@@ -1,0 +1,101 @@
+name: Archive QEX refined 75-condition results
+
+on:
+  push:
+    branches: [results/qex-refined-75-2026-10-15]
+    paths:
+      - '.github/workflows/archive-refined-qex-results.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: '38651945004'
+      DEST: research/qex-refined-75-2026-10-15
+    steps:
+      - name: Checkout result branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Download only the fixed-run artifacts (not older measurements)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$DEST/data/measured" "$DEST/figures"
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" -n refined-75-condition-analysis -D /tmp/qex-summary
+          for f in trials.csv points.csv thresholds.csv metadata.json summary.md; do
+            cp "/tmp/qex-summary/$f" "$DEST/data/$f"
+          done
+          cp /tmp/qex-summary/figure*.png /tmp/qex-summary/figure*.svg "$DEST/figures/"
+          for mode in jtty ft4 ft8; do
+            for group in spread drift-low drift-high; do
+              name="$mode-$group"
+              source="/tmp/qex-measured/$name"
+              out="$DEST/data/measured/$name"
+              mkdir -p "$out"
+              gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" -n "measured-$name" -D "$source"
+              cp "$source/measurements/$name/trials.csv" "$out/trials.csv"
+              cp "$source/measurements/$name/points.csv" "$out/points.csv"
+              cp "$source/measurements/$name/results.json" "$out/results.json"
+              cp "$source/run-$name.log" "$out/run.log"
+            done
+          done
+
+      - name: Check merged vs raw data, 75 conditions and randomization; write report
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 "$DEST/import_results.py"
+
+      - name: Render Chinese PDF with embedded charts
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk libpango-1.0-0 libpangocairo-1.0-0
+          python3 -m venv /tmp/qex-pdfenv
+          /tmp/qex-pdfenv/bin/pip install -q 'weasyprint>=61,<70' 'Markdown>=3.5,<4'
+          /tmp/qex-pdfenv/bin/python - <<'PY'
+          from pathlib import Path
+          from markdown import markdown
+          from weasyprint import HTML
+          root = Path('research/qex-refined-75-2026-10-15').resolve()
+          body = markdown((root/'report.md').read_text(encoding='utf-8'),
+                          extensions=['tables','fenced_code','toc'])
+          css = """
+          @page { size: A4; margin: 18mm 16mm; }
+          body { font-family: 'Noto Sans CJK SC', sans-serif; font-size: 9.5pt; line-height: 1.65; }
+          h1 { font-size: 18pt; } h2 { font-size: 13pt; margin-top: 16pt; }
+          table { border-collapse: collapse; width: 100%; font-size: 7.1pt; }
+          th, td { border-bottom: 1px solid #cccccc; padding: 3px 4px; }
+          th { background: #e9eef4; text-align: left; }
+          img { display: block; max-width: 100%; max-height: 155mm; margin: 10px auto; }
+          p, li { orphans: 3; widows: 3; }
+          tr { break-inside: avoid; }
+          """
+          HTML(string='<html lang="zh-CN"><meta charset="utf-8"><style>'+css+
+               '</style><body>'+body+'</body></html>',base_url=str(root)).write_pdf(root/'report.pdf')
+          print('PDF bytes:', (root/'report.pdf').stat().st_size)
+          PY
+          ( cd "$DEST" && sha256sum report.pdf >> SHA256SUMS.txt )
+
+      - name: Commit verified report, plots and original measurements
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$DEST"
+          if git diff --cached --quiet; then
+            echo 'No changes to archive'
+          else
+            git commit -m "research: archive verified refined QEX run 38651945004 data and figures"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
