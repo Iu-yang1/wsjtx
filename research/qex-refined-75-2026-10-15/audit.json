@@ -1,0 +1,14 @@
+{
+  "source_run_id": 38651945004,
+  "source_code_commit": "c25673947dd43529afbfab89e69fe2dda85fc744",
+  "launcher_commit": "70966e578f24a58577bb3f10b05c9112e19b6990",
+  "conditions": 75,
+  "per_trial_records": 81872,
+  "snr_points": 1267,
+  "estimated_snr50": 50,
+  "censored_error_floor": 25,
+  "measured_groups": 9,
+  "measured_matches_merged": true,
+  "three_callsign_messages": true,
+  "seed_regression": true
+}

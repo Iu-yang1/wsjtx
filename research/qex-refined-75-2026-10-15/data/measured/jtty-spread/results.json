@@ -1,0 +1,690 @@
+{
+  "config": {
+    "bin_dir": "build",
+    "mode": "jtty",
+    "group": "spread",
+    "out": "measurements/jtty-spread",
+    "snr_min": -30.0,
+    "snr_max": 20.0,
+    "coarse_step": 5.0,
+    "pilot_trials": 16,
+    "dense_trials": 128,
+    "dense_step": 0.5,
+    "dense_radius": 2.0,
+    "bootstrap": 700,
+    "base_seed": 20261015,
+    "timeout": 120
+  },
+  "results": [
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -15.8967,
+      "p50_model_interval_95_db": [
+        -16.1504,
+        -15.6828
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1440,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 1.0,
+      "end_wilson95": [
+        0.9709,
+        1.0
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -18.923,
+          "decode_probability": 0.015625
+        },
+        {
+          "snr_2500_db": -18.423,
+          "decode_probability": 0.015625
+        },
+        {
+          "snr_2500_db": -17.923,
+          "decode_probability": 0.039062
+        },
+        {
+          "snr_2500_db": -17.423,
+          "decode_probability": 0.140625
+        },
+        {
+          "snr_2500_db": -16.923,
+          "decode_probability": 0.234375
+        },
+        {
+          "snr_2500_db": -16.423,
+          "decode_probability": 0.367188
+        },
+        {
+          "snr_2500_db": -15.923,
+          "decode_probability": 0.492188
+        },
+        {
+          "snr_2500_db": -15.423,
+          "decode_probability": 0.640625
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.8125
+        },
+        {
+          "snr_2500_db": -14.923,
+          "decode_probability": 0.8125
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 1.0
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "AWGN",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    },
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -15.6491,
+      "p50_model_interval_95_db": [
+        -15.8267,
+        -15.5072
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1440,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 1.0,
+      "end_wilson95": [
+        0.9709,
+        1.0
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -18.667,
+          "decode_probability": 0.007812
+        },
+        {
+          "snr_2500_db": -18.167,
+          "decode_probability": 0.03125
+        },
+        {
+          "snr_2500_db": -17.667,
+          "decode_probability": 0.046875
+        },
+        {
+          "snr_2500_db": -17.167,
+          "decode_probability": 0.085938
+        },
+        {
+          "snr_2500_db": -16.667,
+          "decode_probability": 0.203125
+        },
+        {
+          "snr_2500_db": -16.167,
+          "decode_probability": 0.328125
+        },
+        {
+          "snr_2500_db": -15.667,
+          "decode_probability": 0.492188
+        },
+        {
+          "snr_2500_db": -15.167,
+          "decode_probability": 0.710938
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.75
+        },
+        {
+          "snr_2500_db": -14.667,
+          "decode_probability": 0.8125
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 1.0
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "MQ",
+      "spread_hz": 0.1,
+      "delay_ms": 0.5,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    },
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -13.9545,
+      "p50_model_interval_95_db": [
+        -14.5102,
+        -13.49
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1424,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 1.0,
+      "end_wilson95": [
+        0.9709,
+        1.0
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -16.0,
+          "decode_probability": 0.164062
+        },
+        {
+          "snr_2500_db": -15.5,
+          "decode_probability": 0.25
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.328125
+        },
+        {
+          "snr_2500_db": -14.5,
+          "decode_probability": 0.429688
+        },
+        {
+          "snr_2500_db": -14.0,
+          "decode_probability": 0.492188
+        },
+        {
+          "snr_2500_db": -13.5,
+          "decode_probability": 0.578125
+        },
+        {
+          "snr_2500_db": -13.0,
+          "decode_probability": 0.640625
+        },
+        {
+          "snr_2500_db": -12.5,
+          "decode_probability": 0.710938
+        },
+        {
+          "snr_2500_db": -12.0,
+          "decode_probability": 0.75
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 1.0
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "MM",
+      "spread_hz": 0.5,
+      "delay_ms": 1.0,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    },
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -13.75,
+      "p50_model_interval_95_db": [
+        -14.0902,
+        -13.3688
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1424,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.9844,
+      "end_wilson95": [
+        0.9448,
+        0.9957
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -16.0,
+          "decode_probability": 0.125
+        },
+        {
+          "snr_2500_db": -15.5,
+          "decode_probability": 0.179688
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.273438
+        },
+        {
+          "snr_2500_db": -14.5,
+          "decode_probability": 0.34375
+        },
+        {
+          "snr_2500_db": -14.0,
+          "decode_probability": 0.453125
+        },
+        {
+          "snr_2500_db": -13.5,
+          "decode_probability": 0.546875
+        },
+        {
+          "snr_2500_db": -13.0,
+          "decode_probability": 0.617188
+        },
+        {
+          "snr_2500_db": -12.5,
+          "decode_probability": 0.6875
+        },
+        {
+          "snr_2500_db": -12.0,
+          "decode_probability": 0.773438
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.991071
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.991071
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "MD",
+      "spread_hz": 1.0,
+      "delay_ms": 2.0,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    },
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -12.6136,
+      "p50_model_interval_95_db": [
+        -12.7861,
+        -12.4079
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1440,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 1.0,
+      "end_wilson95": [
+        0.9709,
+        1.0
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -14.5,
+          "decode_probability": 0.09375
+        },
+        {
+          "snr_2500_db": -14.0,
+          "decode_probability": 0.171875
+        },
+        {
+          "snr_2500_db": -13.5,
+          "decode_probability": 0.265625
+        },
+        {
+          "snr_2500_db": -13.0,
+          "decode_probability": 0.367188
+        },
+        {
+          "snr_2500_db": -12.5,
+          "decode_probability": 0.539062
+        },
+        {
+          "snr_2500_db": -12.0,
+          "decode_probability": 0.710938
+        },
+        {
+          "snr_2500_db": -11.5,
+          "decode_probability": 0.851562
+        },
+        {
+          "snr_2500_db": -11.0,
+          "decode_probability": 0.914062
+        },
+        {
+          "snr_2500_db": -10.5,
+          "decode_probability": 0.945312
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 1.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 1.0
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "HM",
+      "spread_hz": 10.0,
+      "delay_ms": 3.0,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    },
+    {
+      "status": "estimated",
+      "p50_snr_2500_db": -7.6595,
+      "p50_model_interval_95_db": [
+        -8.0266,
+        -7.1464
+      ],
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 700,
+      "total_trials": 1440,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.9297,
+      "end_wilson95": [
+        0.8718,
+        0.9626
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.1875
+        },
+        {
+          "snr_2500_db": -9.222,
+          "decode_probability": 0.242188
+        },
+        {
+          "snr_2500_db": -8.722,
+          "decode_probability": 0.34375
+        },
+        {
+          "snr_2500_db": -8.222,
+          "decode_probability": 0.40625
+        },
+        {
+          "snr_2500_db": -7.722,
+          "decode_probability": 0.492188
+        },
+        {
+          "snr_2500_db": -7.222,
+          "decode_probability": 0.554688
+        },
+        {
+          "snr_2500_db": -6.722,
+          "decode_probability": 0.609375
+        },
+        {
+          "snr_2500_db": -6.222,
+          "decode_probability": 0.695312
+        },
+        {
+          "snr_2500_db": -5.722,
+          "decode_probability": 0.726562
+        },
+        {
+          "snr_2500_db": -5.222,
+          "decode_probability": 0.75
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.75
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.953125
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.953125
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.953125
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.953125
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.953125
+        }
+      ],
+      "mode": "jtty",
+      "group": "spread",
+      "condition": "HD",
+      "spread_hz": 30.0,
+      "delay_ms": 7.0,
+      "drift_hz_s": 0.0,
+      "message_ensemble": [
+        "CQ K1ABC CQ",
+        "CQ W9XYZ CQ",
+        "CQ DL1ABC CQ"
+      ],
+      "no_ap": true,
+      "channel": "ITU-R F.1487 Watterson"
+    }
+  ]
+}

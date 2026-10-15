@@ -1,0 +1,686 @@
+{
+  "config": {
+    "bin_dir": "build",
+    "mode": "ft8",
+    "group": "drift-high",
+    "out": "measurements/ft8-drift-high",
+    "snr_min": -30.0,
+    "snr_max": 20.0,
+    "coarse_step": 5.0,
+    "pilot_trials": 16,
+    "dense_trials": 128,
+    "dense_step": 0.5,
+    "dense_radius": 2.0,
+    "bootstrap": 700,
+    "base_seed": 20261015,
+    "timeout": 120
+  },
+  "results": [
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_04.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 4.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_05.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 5.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_06.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 6.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_08.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 8.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_10.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 10.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_12.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 12.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_15.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 15.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_18.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 18.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    },
+    {
+      "status": "no_P50_error_floor",
+      "p50_snr_2500_db": null,
+      "p50_model_interval_95_db": null,
+      "p50_interval_method": "Jeffreys-beta posterior and weighted isotonic P50",
+      "bootstrap_valid_samples": 0,
+      "total_trials": 400,
+      "end_snr_2500_db": 20.0,
+      "end_success_probability": 0.0,
+      "end_wilson95": [
+        0.0,
+        0.0291
+      ],
+      "nonmonotone_confident_steps": [],
+      "fitted_probability": [
+        {
+          "snr_2500_db": -30.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -25.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -20.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": -5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 0.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 5.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 10.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 15.0,
+          "decode_probability": 0.0
+        },
+        {
+          "snr_2500_db": 20.0,
+          "decode_probability": 0.0
+        }
+      ],
+      "mode": "ft8",
+      "group": "drift-high",
+      "condition": "RATE_20.00",
+      "spread_hz": 0.0,
+      "delay_ms": 0.0,
+      "drift_hz_s": 20.0,
+      "message_ensemble": [
+        "CQ K1ABC FN42",
+        "CQ W9XYZ EN37",
+        "CQ DL1ABC JO62"
+      ],
+      "no_ap": true,
+      "channel": "AWGN plus native TX-only linear Doppler"
+    }
+  ]
+}
