@@ -18,6 +18,10 @@
 **FST4** and **FST4W** are designed particularly for the LF and MF bands. On these bands their fundamental sensitivities are better than other *WSJT-X* modes with the same sequence lengths, approaching the theoretical limits for their rates of information throughput. **FST4** is optimized for two-way QSOs, while **FST4W** is for quasi-beacon transmissions of **WSPR**-style messages. **FST4** and **FST4W** do not require the strict, independent time synchronization and phase locking of modes like EbNaut.
 
 
+## Research archive (this fork)
+
+- [2026-10 refined QEX-style JTTY / FT4 / FT8 robustness study](research/qex-refined-75-2026-10-15/README.md): 75 channel conditions, 81,872 Monte Carlo trials, Chinese PDF/Markdown report, PNG/SVG figures, nine original measurement groups, and per-trial CSV ledgers. Source: [Actions run #38651945004](https://github.com/Iu-yang1/wsjtx/actions/runs/38651945004); fixed test code `c25673947dd43529afbfab89e69fe2dda85fc744`.
+
 ## License
 Licensed under the GNU General Public License v3.0 — see [COPYING](COPYING).
 
